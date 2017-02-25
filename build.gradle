@@ -1,0 +1,36 @@
+buildscript {
+    ext.kotlin_version = '1.1.0-rc-91'
+
+    repositories {
+        jcenter()
+        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.1' }
+    }
+
+    dependencies { classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
+}
+
+apply plugin: 'kotlin'
+
+repositories {
+    jcenter()
+    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.1' }
+}
+
+ext {
+    jmh_version = '1.17.5'
+}
+
+dependencies {
+    compile "org.openjdk.jmh:jmh-core:$jmh_version"
+    compile 'com.graphql-java:graphql-java:2.3.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.openjdk.jmh:jmh-generator-bytecode:$jmh_version"
+}
+
+task(jmh, type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator'
+    args = [project.sourceSets.main.output.classesDir,
+            project.sourceSets.main.java.srcDirs[0],
+            project.sourceSets.main.resources.srcDirs[0]]
+}
